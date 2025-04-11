@@ -1,0 +1,73 @@
+<div class="pt-20">
+  <h1 class="text-2xl font-bold text-center mb-6">LOGIN</h1>
+  <form
+    #loginForm="ngForm"
+    class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md"
+    (ngSubmit)="login()"
+  >
+    <div class="mb-4">
+      <label for="usernameOrEmail" class="block text-gray-700 font-medium mb-2"
+        >Username or Email:</label
+      >
+      <input
+        type="text"
+        id="usernameOrEmail"
+        name="usernameOrEmail"
+        required
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        [(ngModel)]="usernameOrEmail"
+        (input)="onInputChange()"
+        #usernameOrEmailRef="ngModel"
+      />
+      <div
+        class="text-xs text-red-500 mt-1"
+        *ngIf="usernameOrEmailRef.invalid && usernameOrEmailRef.touched"
+      >
+        Username or Email is required.
+      </div>
+    </div>
+    <div class="mb-4">
+      <label for="password" class="block text-gray-700 font-medium mb-2"
+        >Password:</label
+      >
+      <input
+        type="password"
+        id="password"
+        name="password"
+        required
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        [(ngModel)]="password"
+        (input)="onInputChange()"
+        #passwordRef="ngModel"
+      />
+      <div
+        class="text-xs text-red-500 mt-1"
+        *ngIf="passwordRef.invalid && passwordRef.touched"
+      >
+        Password is required.
+      </div>
+    </div>
+    <button
+      type="submit"
+      class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50"
+      [ngClass]="{
+        'opacity-100 hover:bg-blue-600 transition duration-200 cursor-pointer':
+          !loginForm.invalid
+      }"
+      [disabled]="loginForm.invalid"
+    >
+      Login
+    </button>
+
+    <div class="text-sm text-gray-700 mt-2 text-right">
+      Not Registered?
+      <a routerLink="/register" class="text-blue-500 cursor-pointer"
+        >Register</a
+      >
+    </div>
+    <div class="text-sm text-red-500 mt-2" *ngIf="error">
+      <i class="fas fa-exclamation-circle text-red-500"></i>
+      {{ error }}
+    </div>
+  </form>
+</div>

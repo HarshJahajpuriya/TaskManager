@@ -1,0 +1,21 @@
+<div class="navbar flex items-center justify-between bg-gray-800 p-4 sticky top-0 relative z-20">
+  <a routerLink="/">
+    <div class="navbar-logo inline-block">
+      <img src="logo.png" alt="Logo" class="h-10" />
+    </div>
+    <h1 class="text-bold text-white text-3xl font-semibold inline-block ml-3 align-super">
+      {{ title }}
+    </h1>
+  </a>
+  <div>
+    <div class="navbar-login">
+      <a routerLink="/login" class="inline-block">
+        <button
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer"
+        >
+          Login / Register
+        </button>
+      </a>
+    </div>
+  </div>
+</div>
