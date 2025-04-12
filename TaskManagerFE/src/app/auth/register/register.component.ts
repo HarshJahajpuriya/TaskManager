@@ -3,8 +3,8 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../shared_components/services/auth-service';
-import { ROLES } from '../../../shared_components/utils/enums';
+import { AuthService } from '../../../shared/services/auth-service';
+import { ROLES } from '../../../shared/utils/enums';
 
 @Component({
   selector: 'app-register',
@@ -28,24 +28,24 @@ export class RegisterComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  async register(): Promise<void> {
+  register() {
     this.error = '';
     console.log(this.email, this.username, this.password, this.role);
-    if (
-      await this.authService.register(
-        this.email,
-        this.username,
-        this.password,
-        this.role
-      )
-    ) {
-      confirm(
-        'Registration successful! You will be redirected to the login page.'
-      );
-      this.router.navigate(['/login']);
-    } else {
-      this.error = 'Invalid username or password';
-    }
+
+    this.authService
+      .register(this.email, this.username, this.password, this.role)
+      .subscribe({
+        next: () => {
+          confirm(
+            'Registration successful! You will be redirected to the login page.'
+          );
+          this.router.navigate(['/login']);
+        },
+        error: (registerErr) => {
+          console.log(registerErr.error.message);
+          this.error = registerErr.error.message ?? 'Registration failed';
+        },
+      });
   }
 
   onInputChange(): void {

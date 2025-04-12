@@ -4,8 +4,8 @@
   class="py-3 px-4 fixed top-21 left-0 right-0 z-15 w-full max-w-lg mx-auto bg-white rounded shadow-md">
   <div class="mb-4">
     <span class="block text-gray-700 font-bold mb-2 text-right">
-      <span *ngIf="task?.id">
-        #{{task?.id}}
+      <span *ngIf="task?._id">
+        #{{task?._id}}
       </span>
     </span>
   </div>
@@ -44,8 +44,8 @@
     <label for="assignedTo" class="block text-gray-700 font-bold mb-2">Assigned To</label>
     <select id="assignedTo" name="assignedTo" class="w-full px-3 py-2 border rounded" [ngModel]="task?.assignedTo?._id"
       (ngModelChange)="task && (task.assignedTo = $event)" #assignedTo="ngModel" required>
-      <option *ngFor="let user of users" [value]="user._id">
-        {{ user.username }} - {{ user.capitalizedRole }}
+      <option *ngFor="let user of users" [value]="user._id" class="capitalize">
+        {{ user.username }} - <span class="capitalize">{{ user.role }}</span>
       </option>
     </select>
     <div *ngIf="assignedTo.invalid && assignedTo.touched" class="text-red-500 text-sm">
@@ -53,9 +53,9 @@
     </div>
   </div>
   <div>
-    <div class="text-gray-700 text-sm mr-2 inline-block" *ngIf="task?.createdAtString && task?.updatedAtString">
-      <b>Created At:</b> {{task?.createdAtString}} <br />
-      <b>Updated At:</b> {{task?.updatedAtString}}
+    <div class="text-gray-700 text-sm mr-2 inline-block" *ngIf="task?.createdAt && task?.updatedAt">
+      <b>Created At:</b> {{task?.createdAt | date : "MMMM d, y, h:mm aaa"}} <br />
+      <b>Updated At:</b> {{task?.updatedAt | date : "MMMM d, y, h:mm aaa"}}
     </div>
     <div class="float-right inline-block">
       <button type="submit" class="bg-blue-500 text-white px-4 py-2 mr-2 rounded "

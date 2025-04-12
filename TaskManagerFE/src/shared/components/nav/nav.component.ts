@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
-import { capitalize } from '../../utils/helpers/capitalize';
+import { User } from '../../../shared/models/User';
 
 @Component({
   selector: 'app-nav',
@@ -14,11 +14,11 @@ export class NavComponent implements OnInit {
   title: string = 'Task Manager';
   currentUrl: string = '';
   isLoggedIn: boolean = false;
-  displayName!: string;
+  user!: User | null;
 
   constructor(private authService: AuthService) {
     this.authService.user$.subscribe((user) => {
-      this.displayName = user?.username + ' - ' + capitalize(user?.role!);
+      this.user = user;
     });
   }
 
