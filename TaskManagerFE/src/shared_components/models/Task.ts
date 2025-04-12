@@ -10,4 +10,8 @@ export type Task = {
     createdAt: Date;
     updatedAt: Date;
     creator: User;
+    createdAtString: string;
+    updatedAtString: string;
+    _id: string;
+    capitalizedStatus: string;
 }

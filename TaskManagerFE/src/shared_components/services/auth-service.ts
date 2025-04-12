@@ -2,6 +2,15 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/User';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import {
+  All_USER_API_URL,
+  BASE_API_URL,
+  LOGIN_API_URL,
+  REGISTER_API_URL,
+} from './urls';
+import { UserResponse } from '../utils/response';
+import { decodeToken } from '../utils/helpers/decodeToken';
+import { ROLES } from '../utils/enums';
 
 @Injectable({
   providedIn: 'root',
@@ -10,13 +19,41 @@ export class AuthService {
   private userSubject = new BehaviorSubject<User | null>(null);
   user$ = this.userSubject.asObservable();
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    const token = sessionStorage.getItem('userToken');
+    if (token) {
+      const user = decodeToken(token);
+      this.userSubject.next(user);
+    } else {
+      this.userSubject.next(null);
+    }
+  }
 
-  login(username: string, password: string): boolean {
-    // make API call to login
-    // this.user = response.user;
-    sessionStorage.setItem('userToken', 'response.JWT');
-    return username === 'admin' && password === 'password';
+  async login(username: string, password: string): Promise<UserResponse> {
+    return new Promise<UserResponse>(async (resolve, reject) => {
+      try {
+        const response = await fetch(`${BASE_API_URL}${LOGIN_API_URL}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          body: JSON.stringify({ username, password }),
+        });
+        if (!response.ok) {
+          const errorBody = await response.json();
+          throw new Error(`${errorBody.message}`);
+        }
+        const { token, user } = await response.json();
+        console.log(token, user);
+        this.userSubject.next(user);
+        sessionStorage.setItem('userToken', token);
+        resolve({ isSuccess: true, user, message: 'Login successful' });
+      } catch (error: any) {
+        console.error('Login failed:', error.message);
+        reject(new Error(error.message as string));
+      }
+    });
   }
 
   logout(): void {
@@ -25,29 +62,66 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  isAuthenticated(): boolean {
-    if (sessionStorage.getItem('userToken')) {
-      return true;
-    }
-    this.userSubject.next(null);
-    this.router.navigate(['/login']);
-    return false;
-  }
-
-  register(email: string, username: string, password: string): boolean {
-    // make API call to register the user
-    return false;
+  register(
+    email: string,
+    username: string,
+    password: string,
+    role: ROLES
+  ): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      try {
+        const response = await fetch(`${BASE_API_URL}${REGISTER_API_URL}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          body: JSON.stringify({ role, email, username, password }),
+        });
+        if (!response.ok) {
+          const errorBody = await response.json();
+          throw new Error(`${errorBody.message}`);
+        }
+        const { token, user } = await response.json();
+        console.log(token, user);
+        this.userSubject.next(user);
+        sessionStorage.setItem('userToken', token);
+        resolve(true);
+      } catch (error: any) {
+        console.error('Registration failed:', error.message);
+        reject(new Error(error.message as string));
+      }
+    });
   }
 
   getLogggedInUser() {
-    if (this.userSubject.value) {
+    if (this.userSubject.value && sessionStorage.getItem('userToken')) {
       return this.userSubject.value;
     } else this.router.navigate(['/login']);
     return null;
   }
 
-  getAllUsers() {
-    // make API call to fetch all the users
-    return [];
+  getAllUsers(): Promise<User[]> {
+    return new Promise<User[]>(async (resolve, reject) => {
+      try {
+        const response = await fetch(`${BASE_API_URL}${All_USER_API_URL}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${sessionStorage.getItem('userToken')}`,
+          },
+        });
+        if (!response.ok) {
+          const errorBody = await response.json();
+          throw new Error(`${errorBody.message}`);
+        }
+        const users = await response.json();
+        resolve(users);
+      } catch (error: any) {
+        console.error('Fetch failed:', error.message);
+        reject(new Error(error.message as string));
+      }
+    });
   }
 }

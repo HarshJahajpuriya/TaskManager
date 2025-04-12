@@ -8,14 +8,20 @@
     </h1>
   </a>
   <div>
-    <div class="navbar-login">
+    <div class="navbar-login" *ngIf="!isLoggedIn">
       <a routerLink="/login" class="inline-block">
-        <button
-          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer"
-        >
+        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer">
           Login / Register
         </button>
       </a>
     </div>
+    <div class="navbar-logout" *ngIf="isLoggedIn">
+      <span class="text-white mr-4">
+        <i class="fa-solid fa-user-tie mr-2"></i>
+        {{ displayName }}
+      </span>
+      <button (click)="logout()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 cursor-pointer">
+        Logout
+      </button>
+    </div>
   </div>
-</div>
