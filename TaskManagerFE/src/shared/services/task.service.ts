@@ -118,6 +118,10 @@ export class TaskService {
     return this.taskSubject.value;
   }
 
+  getAllTasks() {
+    return this.allTasksSubject.value;
+  }
+
   setAllTasks(tasks: Task[]) {
     this.allTasksSubject.next(tasks);
   }

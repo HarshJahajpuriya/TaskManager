@@ -15,7 +15,14 @@
           <th class="px-4 py-2 border border-gray-300 text-left">Description</th>
           <th class="px-4 py-2 border border-gray-300 text-left">Creator</th>
           <th class="px-4 py-2 border border-gray-300 text-left">Assigned To</th>
-          <th class="px-4 py-2 border border-gray-300 text-left">Status</th>
+          <th class="px-4 py-2 border border-gray-300 text-left">Status
+            <select class="border border-gray-700 rounded float-right" [(ngModel)]="statusFilter"
+              (ngModelChange)="filterTasks()">
+              <option value="all">All</option>
+              <option value="completed">Completed</option>
+              <option value="pending">Pending</option>
+            </select>
+          </th>
           <th class="px-4 py-2 border border-gray-300 text-left">Created At</th>
           <th class="px-4 py-2 border border-gray-300 text-left">Updated At</th>
           <th class="px-4 py-2 border border-gray-300 text-left">Delete</th>
@@ -24,7 +31,8 @@
       <tbody>
         <tr *ngFor="let task of tasks" class="hover:bg-gray-100 cursor-pointer"
           (click)="openEditTaskModal(cloneTask(task))">
-          <td class="px-4 py-2 border border-gray-300">{{ task?._id?.substring(task._id.length - 4, task._id.length) }}</td>
+          <td class="px-4 py-2 border border-gray-300">{{ task?._id?.substring(task._id.length - 4, task._id.length) }}
+          </td>
           <td class="px-4 py-2 border border-gray-300">{{ task?.title }}</td>
           <td class="px-4 py-2 border border-gray-300">{{ task?.description }}</td>
           <td class="px-4 py-2 border border-gray-300">{{ task?.creator?.username }}</td>

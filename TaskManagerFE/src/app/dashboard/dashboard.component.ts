@@ -8,16 +8,18 @@ import { Task } from '../../shared/models/Task';
 import { SocketService } from '../../shared/services/socket.service';
 import { take } from 'rxjs';
 import { ROLES } from '../../shared/utils/enums';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, TaskModalComponent],
+  imports: [CommonModule, TaskModalComponent, FormsModule],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
   user: User | null;
   tasks: Task[] = [];
   isTaskModalOpen: boolean = false;
+  statusFilter: 'completed' | 'pending' | 'all' = 'all';
 
   constructor(
     private authService: AuthService,
@@ -102,5 +104,15 @@ export class DashboardComponent implements OnInit {
 
   cloneTask(task: Task): Task {
     return JSON.parse(JSON.stringify(task));
+  }
+
+  filterTasks() {
+    if (this.statusFilter === 'all') {
+      this.tasks = this.taskService.getAllTasks();
+      return;
+    }
+    this.tasks = this.taskService
+      .getAllTasks()
+      .filter((task) => task.status === this.statusFilter);
   }
 }
