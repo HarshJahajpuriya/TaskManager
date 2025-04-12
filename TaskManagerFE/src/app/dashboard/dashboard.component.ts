@@ -7,6 +7,7 @@ import { TaskService } from '../../shared/services/task.service';
 import { Task } from '../../shared/models/Task';
 import { SocketService } from '../../shared/services/socket.service';
 import { take } from 'rxjs';
+import { ROLES } from '../../shared/utils/enums';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -33,11 +34,29 @@ export class DashboardComponent implements OnInit {
     this.taskService.getTasks();
     this.socketService.on('update-task').subscribe((task: Task) => {
       this.taskService.allTasks$.pipe(take(1)).subscribe((tasks) => {
-        tasks.splice(
-          tasks.findIndex((tmpTask) => tmpTask._id === task._id),
-          1,
-          task
+        if (this.user?.role === ROLES.EMPLOYEE) {
+          if (task.assignedTo._id !== this.user._id) {
+            this.taskService.setAllTasks(
+              tasks.filter((tmpTask) => tmpTask._id !== task._id)
+            );
+            return;
+          }
+        } else if (this.user?.role === ROLES.TEAM_LEAD) {
+          if (task.assignedTo.role === ROLES.MANAGER) {
+            this.taskService.setAllTasks(
+              tasks.filter((tmpTask) => tmpTask._id !== task._id)
+            );
+            return;
+          }
+        }
+        const taskIndex = tasks.findIndex(
+          (tmpTask) => tmpTask._id === task._id
         );
+        if (taskIndex === -1) {
+          tasks.unshift(task);
+        } else {
+          tasks.splice(taskIndex, 1, task);
+        }
         this.taskService.setAllTasks(tasks);
       });
     });
