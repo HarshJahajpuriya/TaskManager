@@ -21,18 +21,11 @@ export class LoginComponent {
 
   async login(): Promise<void> {
     try {
-      const loginResponse: UserResponse = await this.authService.login(
-        this.usernameOrEmail,
-        this.password
-      );
-      if (loginResponse.isSuccess) {
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.error = loginResponse.message ?? 'Login failed';
-      }
+      await this.authService.login(this.usernameOrEmail, this.password);
+      this.router.navigate(['/dashboard']);
     } catch (error: any) {
       console.log('Login error:', error);
-      this.error = (error as UserResponse).message ?? 'Login failed';
+      this.error = error.message ?? 'Login failed';
     }
   }
 

@@ -1,5 +1,4 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Task } from '../../../shared_components/models/Task';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -12,7 +11,7 @@ import { capitalize } from '../../../shared_components/utils/helpers/capitalize'
 @Component({
   selector: 'app-dashboard-create-task-modal',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './taskModal.component.html',
 })
 export class TaskModalComponent implements OnInit {

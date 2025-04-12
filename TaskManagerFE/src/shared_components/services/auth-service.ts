@@ -95,7 +95,6 @@ export class AuthService {
   }
 
   getLogggedInUser() {
-    console.log(this.userSubject.value);
     if (this.userSubject.value && sessionStorage.getItem('userToken')) {
       return this.userSubject.value;
     } else this.router.navigate(['/login']);

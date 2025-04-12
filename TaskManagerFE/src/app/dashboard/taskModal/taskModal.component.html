@@ -53,13 +53,14 @@
     </div>
   </div>
   <div>
-    <div type="submit" class="text-gray-700 text-sm mr-2 inline-block">
+    <div class="text-gray-700 text-sm mr-2 inline-block" *ngIf="task?.createdAtString && task?.updatedAtString">
       <b>Created At:</b> {{task?.createdAtString}} <br />
       <b>Updated At:</b> {{task?.updatedAtString}}
     </div>
     <div class="float-right inline-block">
-      <button type="submit" class="bg-blue-500 text-white px-4 py-2 mr-2 rounded hover:bg-blue-600 cursor-pointer"
-        [disabled]="taskForm.invalid">
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 mr-2 rounded "
+        [ngClass]="{'hover:bg-blue-600 cursor-pointer transition duration-200':!taskForm.invalid}"
+        [disabled]=" taskForm.invalid">
         Save
       </button>
       <button type="button" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 cursor-pointer"

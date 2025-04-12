@@ -22,7 +22,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let task of tasks" class="hover:bg-gray-100" (click)="openEditTaskModal(cloneTask(task))">
+        <tr *ngFor="let task of tasks" class="hover:bg-gray-100 cursor-pointer" (click)="openEditTaskModal(cloneTask(task))">
           <td class="px-4 py-2 border border-gray-300">{{ task?.id?.substring(task._id.length - 4, task._id.length) }}</td>
           <td class="px-4 py-2 border border-gray-300">{{ task?.title }}</td>
           <td class="px-4 py-2 border border-gray-300">{{ task?.description }}</td>
