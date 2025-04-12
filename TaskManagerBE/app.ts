@@ -39,7 +39,6 @@ app.use("/users", validateToken, extractRole, userRoutes);
 app.use(express.static("public"));
 
 io.on("connection", (socket) => {
-
   socket.on("task-got-updated", (task: Task) => {
     console.log(`Task Updated by : ${task._id}`);
     socket.broadcast.emit("update-task", task);

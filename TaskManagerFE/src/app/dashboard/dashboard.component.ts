@@ -51,7 +51,9 @@ export class DashboardComponent implements OnInit {
 
     this.socketService.on('remove-task').subscribe((taskId: string) => {
       this.taskService.allTasks$.pipe(take(1)).subscribe((tasks) => {
-        this.taskService.setAllTasks( tasks.filter((tmpTask) => tmpTask._id !== taskId));
+        this.taskService.setAllTasks(
+          tasks.filter((tmpTask) => tmpTask._id !== taskId)
+        );
       });
     });
   }

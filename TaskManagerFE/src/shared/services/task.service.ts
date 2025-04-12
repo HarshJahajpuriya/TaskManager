@@ -70,10 +70,10 @@ export class TaskService {
           }
         },
       });
-    }
-    
-    deleteTask(taskId: string) {
-      this.httpApiService
+  }
+
+  deleteTask(taskId: string) {
+    this.httpApiService
       .delete<Task>(`${All_TASK_API_URL}/${taskId}`)
       .subscribe({
         next: (response) => {
