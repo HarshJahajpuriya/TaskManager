@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-not-found',
+  selector: 'app-landing',
   standalone: true,
   imports: [RouterLink],
-  templateUrl: './not-found.component.html',
+  templateUrl: './landing.component.html',
 })
-export class NotFoundComponent {
+export class LandingComponent {
   constructor(private router: Router) {}
 }

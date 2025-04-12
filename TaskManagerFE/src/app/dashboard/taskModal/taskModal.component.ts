@@ -7,6 +7,7 @@ import { User } from '../../../shared_components/models/User';
 import { AuthService } from '../../../shared_components/services/auth-service';
 import { TaskService } from '../../../shared_components/services/task.service';
 import { Subscription } from 'rxjs';
+import { capitalize } from '../../../shared_components/utils/helpers/capitalize';
 
 @Component({
   selector: 'app-dashboard-create-task-modal',
@@ -21,18 +22,41 @@ export class TaskModalComponent implements OnInit {
 
   @Output() closeModal: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  constructor(private authService: AuthService, private taskService: TaskService) {
-    this.users = this.authService.getAllUsers();
+  constructor(
+    private authService: AuthService,
+    private taskService: TaskService
+  ) {}
+
+  async ngOnInit() {
+    this.taskSubscription = this.taskService.task$.subscribe(
+      (task: Task | null) => {
+        this.task = task!;
+      }
+    );
+    this.users = await this.authService.getAllUsers();
+    this.users.forEach((user) => {
+      user.capitalizedRole = capitalize(user.role);
+    });
+    console.log(this.task)
   }
 
-  ngOnInit() {
-    this.taskSubscription = this.taskService.task$.subscribe((task: Task | null) => {
-      this.task=task!;
-    })
-  }
-
-  onSubmit(form: NgForm) {
-    console.log('Submitted')
+  async onSubmit(form: NgForm) {
+    console.dir(form);
+    if (this.taskService.getTask()) {
+      try {
+        await this.taskService.updateTask(this.task);
+        this.closeModal.emit(false);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        this.taskService.createTask(form.value);
+        this.closeModal.emit(false);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 
   closeTaskModal() {

@@ -1,4 +1,4 @@
-<div class="dashboard p-6 bg-gray-100 min-h-screen">
+<div class="dashboard p-6 bg-gray-100 min-h-screen mb-10">
   <h1 class="text-3xl font-bold text-center mb-6">Task Dashboard</h1>
   <div class="overflow-x-auto">
     <div class="text-right mb-2 mr-2" *ngIf="user?.role !== 'team lead'">
@@ -22,23 +22,24 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let task of tasks" class="hover:bg-gray-100" (click)="openEditTaskModal(task)">
-          <td class="px-4 py-2 border border-gray-300">{{ task.id }}</td>
-          <td class="px-4 py-2 border border-gray-300">{{ task.title }}</td>
-          <td class="px-4 py-2 border border-gray-300">{{ task.description }}</td>
-          <td class="px-4 py-2 border border-gray-300">{{ task.creator }}</td>
-          <td class="px-4 py-2 border border-gray-300">{{ task.assignedTo }}</td>
-          <td class="px-4 py-2 border border-gray-300">{{ task.status }}</td>
-          <td class="px-4 py-2 border border-gray-300">{{ task.createdAt }}</td>
-          <td class="px-4 py-2 border border-gray-300">{{ task.updatedAt }}</td>
-          <td class="px-4 py-2 border border-gray-300"><i class="fa-solid fa-trash text-red-500 cursor-pointer"
-              (click)="deleteTask(task, $event)"></i></td>
+        <tr *ngFor="let task of tasks" class="hover:bg-gray-100" (click)="openEditTaskModal(cloneTask(task))">
+          <td class="px-4 py-2 border border-gray-300">{{ task?.id?.substring(task._id.length - 4, task._id.length) }}</td>
+          <td class="px-4 py-2 border border-gray-300">{{ task?.title }}</td>
+          <td class="px-4 py-2 border border-gray-300">{{ task?.description }}</td>
+          <td class="px-4 py-2 border border-gray-300">{{ task?.creator?.username }}</td>
+          <td class="px-4 py-2 border border-gray-300">{{ task?.assignedTo?.username }}</td>
+          <td class="px-4 py-2 border border-gray-300">{{ task?.capitalizedStatus }}</td>
+          <td class="px-4 py-2 border border-gray-300">{{ task?.createdAtString }}</td>
+          <td class="px-4 py-2 border border-gray-300">{{ task?.updatedAtString }}</td>
+          <td class="px-4 py-2 border border-gray-300 text-center">
+            <i class="fa-solid fa-trash text-red-500 cursor-pointer" (click)="deleteTask(task, $event)"></i>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <!-- Create Task -->
-  <app-dashboard-create-task-modal *ngIf="isTaskModalOpen" (closeModal)="closeTaskModal()"
-    (taskCreated)="saveTask($event)"></app-dashboard-create-task-modal>
+  <app-dashboard-create-task-modal *ngIf="isTaskModalOpen"
+    (closeModal)="closeTaskModal()"></app-dashboard-create-task-modal>
 </div>
