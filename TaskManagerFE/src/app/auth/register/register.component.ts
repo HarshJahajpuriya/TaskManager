@@ -3,7 +3,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../shared/services/auth-service';
+import { AuthService } from '../../../shared/services/auth.service';
 import { ROLES } from '../../../shared/utils/enums';
 
 @Component({

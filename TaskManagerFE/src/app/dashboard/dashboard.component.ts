@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../shared/services/auth-service';
+import { AuthService } from '../../shared/services/auth.service';
 import { User } from '../../shared/models/User';
 import { CommonModule } from '@angular/common';
 import { TaskModalComponent } from './taskModal/taskModal.component';
 import { TaskService } from '../../shared/services/task.service';
 import { Task } from '../../shared/models/Task';
+import { SocketService } from '../../shared/services/socket.service';
+import { take } from 'rxjs';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -18,7 +20,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private socketService: SocketService
   ) {
     this.user = this.authService.getLogggedInUser();
     this.taskService.allTasks$.subscribe((tasks) => {
@@ -26,8 +29,31 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  async ngOnInit() {
-    await this.taskService.getTasks();
+  ngOnInit() {
+    this.taskService.getTasks();
+    this.socketService.on('update-task').subscribe((task: Task) => {
+      this.taskService.allTasks$.pipe(take(1)).subscribe((tasks) => {
+        tasks.splice(
+          tasks.findIndex((tmpTask) => tmpTask._id === task._id),
+          1,
+          task
+        );
+        this.taskService.setAllTasks(tasks);
+      });
+    });
+
+    this.socketService.on('add-task').subscribe((task: Task) => {
+      this.taskService.allTasks$.pipe(take(1)).subscribe((tasks) => {
+        tasks.unshift(task);
+        this.taskService.setAllTasks(tasks);
+      });
+    });
+
+    this.socketService.on('remove-task').subscribe((taskId: string) => {
+      this.taskService.allTasks$.pipe(take(1)).subscribe((tasks) => {
+        this.taskService.setAllTasks( tasks.filter((tmpTask) => tmpTask._id !== taskId));
+      });
+    });
   }
 
   openNewTaskModal() {

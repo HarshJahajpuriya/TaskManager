@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Task } from '../../../shared/models/Task';
 import { FormsModule, NgForm } from '@angular/forms';
 import { User } from '../../../shared/models/User';
-import { AuthService } from '../../../shared/services/auth-service';
+import { AuthService } from '../../../shared/services/auth.service';
 import { TaskService } from '../../../shared/services/task.service';
 import { Subscription } from 'rxjs';
 

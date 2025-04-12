@@ -4,7 +4,8 @@ import { BehaviorSubject, take } from 'rxjs';
 import { All_TASK_API_URL } from './urls';
 import { decodeToken } from '../utils/helpers/decodeToken';
 import { HttpApiService } from './http-api.service';
-import { AuthService } from './auth-service';
+import { AuthService } from './auth.service';
+import { SocketService } from './socket.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,8 @@ export class TaskService {
 
   constructor(
     private httpApiService: HttpApiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private socketService: SocketService
   ) {}
 
   createTask(task: Task) {
@@ -33,6 +35,7 @@ export class TaskService {
           this.allTasks$.pipe(take(1)).subscribe((tasks) => {
             this.allTasksSubject.next([response, ...tasks]);
           });
+          this.socketService.emit('task-got-added', response);
         },
         error: (error) => {
           console.log(error);
@@ -56,6 +59,7 @@ export class TaskService {
               response
             );
             this.allTasksSubject.next(tasks);
+            this.socketService.emit('task-got-updated', response);
           });
         },
         error: (error) => {
@@ -66,16 +70,17 @@ export class TaskService {
           }
         },
       });
-  }
-
-  deleteTask(taskId: string) {
-    this.httpApiService
+    }
+    
+    deleteTask(taskId: string) {
+      this.httpApiService
       .delete<Task>(`${All_TASK_API_URL}/${taskId}`)
       .subscribe({
         next: (response) => {
           this.allTasks$.pipe(take(1)).subscribe((tasks) => {
             const updatedTasks = tasks.filter((task) => task._id !== taskId);
             this.allTasksSubject.next(updatedTasks);
+            this.socketService.emit('task-got-deleted', taskId);
           });
         },
         error: (error) => {
@@ -111,5 +116,9 @@ export class TaskService {
 
   getTask(): Task | null {
     return this.taskSubject.value;
+  }
+
+  setAllTasks(tasks: Task[]) {
+    this.allTasksSubject.next(tasks);
   }
 }
