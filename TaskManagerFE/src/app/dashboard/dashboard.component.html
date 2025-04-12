@@ -22,15 +22,16 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let task of tasks" class="hover:bg-gray-100 cursor-pointer" (click)="openEditTaskModal(cloneTask(task))">
-          <td class="px-4 py-2 border border-gray-300">{{ task?.id?.substring(task._id.length - 4, task._id.length) }}</td>
+        <tr *ngFor="let task of tasks" class="hover:bg-gray-100 cursor-pointer"
+          (click)="openEditTaskModal(cloneTask(task))">
+          <td class="px-4 py-2 border border-gray-300">{{ task?._id?.substring(task._id.length - 4, task._id.length) }}</td>
           <td class="px-4 py-2 border border-gray-300">{{ task?.title }}</td>
           <td class="px-4 py-2 border border-gray-300">{{ task?.description }}</td>
           <td class="px-4 py-2 border border-gray-300">{{ task?.creator?.username }}</td>
           <td class="px-4 py-2 border border-gray-300">{{ task?.assignedTo?.username }}</td>
-          <td class="px-4 py-2 border border-gray-300">{{ task?.capitalizedStatus }}</td>
-          <td class="px-4 py-2 border border-gray-300">{{ task?.createdAtString }}</td>
-          <td class="px-4 py-2 border border-gray-300">{{ task?.updatedAtString }}</td>
+          <td class="px-4 py-2 border border-gray-300 capitalize">{{ task?.status }}</td>
+          <td class="px-4 py-2 border border-gray-300">{{ task?.createdAt | date : "MMMM d, y, h:mm aaa" }}</td>
+          <td class="px-4 py-2 border border-gray-300">{{ task?.updatedAt | date : "MMMM d, y, h:mm aaa" }}</td>
           <td class="px-4 py-2 border border-gray-300 text-center">
             <i class="fa-solid fa-trash text-red-500 cursor-pointer" (click)="deleteTask(task, $event)"></i>
           </td>

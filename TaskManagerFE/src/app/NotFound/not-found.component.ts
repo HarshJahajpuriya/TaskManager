@@ -8,5 +8,5 @@ import { Router, RouterLink } from '@angular/router';
   templateUrl: './not-found.component.html',
 })
 export class NotFoundComponent {
-  constructor(private router: Router) {}
+  constructor() {}
 }

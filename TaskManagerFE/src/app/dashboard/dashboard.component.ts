@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../shared_components/services/auth-service';
-import { User } from '../../shared_components/models/User';
+import { AuthService } from '../../shared/services/auth.service';
+import { User } from '../../shared/models/User';
 import { CommonModule } from '@angular/common';
 import { TaskModalComponent } from './taskModal/taskModal.component';
-import { TaskService } from '../../shared_components/services/task.service';
-import { Task } from '../../shared_components/models/Task';
-import { formatDateTime } from '../../shared_components/utils/helpers/dateTimeFormatter';
-import { capitalize } from '../../shared_components/utils/helpers/capitalize';
-
+import { TaskService } from '../../shared/services/task.service';
+import { Task } from '../../shared/models/Task';
+import { SocketService } from '../../shared/services/socket.service';
+import { take } from 'rxjs';
+import { ROLES } from '../../shared/utils/enums';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -15,28 +15,66 @@ import { capitalize } from '../../shared_components/utils/helpers/capitalize';
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
-  user!: User | null;
+  user: User | null;
   tasks: Task[] = [];
   isTaskModalOpen: boolean = false;
 
   constructor(
     private authService: AuthService,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private socketService: SocketService
   ) {
     this.user = this.authService.getLogggedInUser();
     this.taskService.allTasks$.subscribe((tasks) => {
-      tasks.forEach((task) => {
-        task.createdAtString = formatDateTime(task.createdAt as Date);
-        task.updatedAtString = formatDateTime(task.updatedAt as Date);
-        task.id = task._id;
-        task.capitalizedStatus = capitalize(task.status);
-      });
       this.tasks = tasks;
     });
   }
 
-  async ngOnInit() {
-    await this.taskService.getTasks();
+  ngOnInit() {
+    this.taskService.getTasks();
+    this.socketService.on('update-task').subscribe((task: Task) => {
+      this.taskService.allTasks$.pipe(take(1)).subscribe((tasks) => {
+        if (this.user?.role === ROLES.EMPLOYEE) {
+          if (task.assignedTo._id !== this.user._id) {
+            this.taskService.setAllTasks(
+              tasks.filter((tmpTask) => tmpTask._id !== task._id)
+            );
+            return;
+          }
+        } else if (this.user?.role === ROLES.TEAM_LEAD) {
+          if (task.assignedTo.role === ROLES.MANAGER) {
+            this.taskService.setAllTasks(
+              tasks.filter((tmpTask) => tmpTask._id !== task._id)
+            );
+            return;
+          }
+        }
+        const taskIndex = tasks.findIndex(
+          (tmpTask) => tmpTask._id === task._id
+        );
+        if (taskIndex === -1) {
+          tasks.unshift(task);
+        } else {
+          tasks.splice(taskIndex, 1, task);
+        }
+        this.taskService.setAllTasks(tasks);
+      });
+    });
+
+    this.socketService.on('add-task').subscribe((task: Task) => {
+      this.taskService.allTasks$.pipe(take(1)).subscribe((tasks) => {
+        tasks.unshift(task);
+        this.taskService.setAllTasks(tasks);
+      });
+    });
+
+    this.socketService.on('remove-task').subscribe((taskId: string) => {
+      this.taskService.allTasks$.pipe(take(1)).subscribe((tasks) => {
+        this.taskService.setAllTasks(
+          tasks.filter((tmpTask) => tmpTask._id !== taskId)
+        );
+      });
+    });
   }
 
   openNewTaskModal() {
@@ -52,10 +90,7 @@ export class DashboardComponent implements OnInit {
   async deleteTask(task: Task, ev: Event) {
     ev.stopPropagation();
     try {
-      const isTaskDeleted = await this.taskService.deleteTask(task.id);
-      if (isTaskDeleted) {
-        this.tasks = this.tasks.filter((t) => t.id !== task.id);
-      }
+      await this.taskService.deleteTask(task._id);
     } catch (error: any) {
       alert(error.message);
     }
