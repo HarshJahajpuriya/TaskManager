@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import Task from "../models/Task";
-import { Task as TaskType, User as UserType } from "../utils/types";
-import { ROLES } from "../utils/enums";
+import { ROLES, User as UserType } from "../types/user";
+import { Task as TaskType } from "../types/task";
 import User from "../models/User";
 
 export const getTasks = async (req: Request, res: Response) => {

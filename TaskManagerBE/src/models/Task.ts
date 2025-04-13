@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { TASK_STATUS } from "../utils/enums";
+import { TASK_STATUS } from "../types/task";
 
 export interface Task extends Document {
   title: string;

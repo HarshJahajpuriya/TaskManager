@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Task } from '../models/Task';
 import { BehaviorSubject, take } from 'rxjs';
 import { All_TASK_API_URL } from './urls';
-import { decodeToken } from '../utils/helpers/decodeToken';
+import { decodeToken } from '../utils/decodeToken';
 import { HttpApiService } from './http-api.service';
 import { AuthService } from './auth.service';
 import { SocketService } from './socket.service';
@@ -11,15 +11,15 @@ import { SocketService } from './socket.service';
   providedIn: 'root',
 })
 export class TaskService {
-  private taskSubject = new BehaviorSubject<Task | null>(null);
+  private readonly taskSubject = new BehaviorSubject<Task | null>(null);
   task$ = this.taskSubject.asObservable();
-  private allTasksSubject = new BehaviorSubject<Task[]>([]);
+  private readonly allTasksSubject = new BehaviorSubject<Task[]>([]);
   allTasks$ = this.allTasksSubject.asObservable();
 
   constructor(
-    private httpApiService: HttpApiService,
-    private authService: AuthService,
-    private socketService: SocketService
+    private readonly httpApiService: HttpApiService,
+    private readonly authService: AuthService,
+    private readonly socketService: SocketService
   ) {}
 
   createTask(task: Task) {
@@ -41,6 +41,7 @@ export class TaskService {
           console.log(error);
           // forbidden
           if (error.status === 403) {
+            alert('Token expired!!! Redirecting to Login Page.');
             this.authService.logout();
           }
         },
@@ -66,6 +67,7 @@ export class TaskService {
           console.log(error);
           // forbidden
           if (error.status === 403) {
+            alert('Token expired!!! Redirecting to Login Page.');
             this.authService.logout();
           }
         },
@@ -87,6 +89,7 @@ export class TaskService {
           console.log(error);
           // forbidden
           if (error.status === 403) {
+            alert('Token expired!!! Redirecting to Login Page.');
             this.authService.logout();
           }
         },
@@ -104,6 +107,7 @@ export class TaskService {
         console.log(error);
         // forbidden
         if (error.status === 403) {
+          alert('Token expired!!! Redirecting to Login Page.');
           this.authService.logout();
         }
       },

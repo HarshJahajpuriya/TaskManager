@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
   selector: 'app-dashboard-create-task-modal',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './taskModal.component.html',
+  templateUrl: './task-modal.component.html',
 })
 export class TaskModalComponent implements OnInit {
   task!: Task;
@@ -21,8 +21,8 @@ export class TaskModalComponent implements OnInit {
   @Output() closeModal: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(
-    private authService: AuthService,
-    private taskService: TaskService
+    private readonly authService: AuthService,
+    private readonly taskService: TaskService
   ) {}
 
   ngOnInit() {
@@ -39,17 +39,18 @@ export class TaskModalComponent implements OnInit {
         console.log(error);
         // forbidden
         if (error.status === 403) {
+          alert('Token expired!!! Redirecting to Login Page.');
           this.authService.logout();
         }
       },
     });
   }
 
-  async onSubmit(form: NgForm) {
+  onSubmit(form: NgForm) {
     console.dir(form.value);
     if (this.taskService.getTask()) {
       try {
-        await this.taskService.updateTask(this.task);
+        this.taskService.updateTask(this.task);
         this.closeModal.emit(false);
       } catch (error) {
         console.log(error);

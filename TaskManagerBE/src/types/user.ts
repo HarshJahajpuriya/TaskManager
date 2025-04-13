@@ -1,4 +1,8 @@
-import { ROLES } from '../utils/enums';
+export enum ROLES {
+  MANAGER = "manager",
+  TEAM_LEAD = "team lead",
+  EMPLOYEE = "employee",
+}
 
 export type User = {
   username: string;

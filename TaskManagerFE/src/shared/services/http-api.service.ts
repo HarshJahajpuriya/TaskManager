@@ -45,7 +45,6 @@ export class HttpApiService {
     path: string,
     params?: { [key: string]: string }
   ): Observable<TResponse> {
-    console.log(this.getHttpHeaders());
     return this.httpClient.delete(`${BASE_API_URL}${path}`, {
       headers: this.getHttpHeaders(),
       params: this.getValidParams(params),

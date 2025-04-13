@@ -1,12 +1,9 @@
-import { ROLES, TASK_STATUS } from "./enums";
+import { User } from "./user";
 
-export type User = {
-  username: string;
-  email: string;
-  password: string;
-  role: ROLES;
-  _id: string;
-};
+export enum TASK_STATUS {
+  PENDING = "pending",
+  COMPLETED = "completed",
+}
 
 export type Task = {
   title: string;

@@ -1,5 +1,5 @@
 import * as jwt_decode from 'jwt-decode';
-import { User } from '../../models/User';
+import { User } from '../models/User';
 
 export const decodeToken = (token: string): User => {
   try {

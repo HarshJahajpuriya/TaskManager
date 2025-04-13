@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import User from "../models/User";
-import { User as UserType } from "../utils/types";
+import { User as UserType } from "../types/user";
 
 const JWT_SECRET = process.env.JWT_SECRET || "taskManagerSecret";
 

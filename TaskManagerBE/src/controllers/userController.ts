@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/User";
-import { User as UserType } from "../utils/types";
-import { ROLES } from "../utils/enums";
+import { ROLES, User as UserType } from "../types/user";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   const user: UserType = (req as any).user;

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { Router } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../shared/services/auth.service';
@@ -9,7 +8,7 @@ import { ROLES } from '../../../shared/utils/enums';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './register.component.html',
 })
 export class RegisterComponent {
@@ -26,17 +25,19 @@ export class RegisterComponent {
     [ROLES.TEAM_LEAD, 'Team Lead'],
   ];
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly router: Router
+  ) {}
 
   register() {
     this.error = '';
-    console.log(this.email, this.username, this.password, this.role);
 
     this.authService
       .register(this.email, this.username, this.password, this.role)
       .subscribe({
         next: () => {
-          confirm(
+          alert(
             'Registration successful! You will be redirected to the login page.'
           );
           this.router.navigate(['/login']);

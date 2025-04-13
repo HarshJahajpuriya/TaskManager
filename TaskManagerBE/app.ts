@@ -8,7 +8,7 @@ import validateToken from "./src/middlewares/auth";
 import extractRole from "./src/middlewares/extractRole";
 import taskRoutes from "./src/routes/taskRoutes";
 import userRoutes from "./src/routes/userRoutes";
-import { Task } from "./src/utils/types";
+import { Task } from "./src/models/Task";
 
 const app = express();
 const port = 3000;

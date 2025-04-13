@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../shared/services/auth.service';
 import { User } from '../../shared/models/User';
 import { CommonModule } from '@angular/common';
-import { TaskModalComponent } from './taskModal/taskModal.component';
+import { TaskModalComponent } from './task-modal/task-modal.component';
 import { TaskService } from '../../shared/services/task.service';
 import { Task } from '../../shared/models/Task';
 import { SocketService } from '../../shared/services/socket.service';
@@ -92,7 +92,7 @@ export class DashboardComponent implements OnInit {
   async deleteTask(task: Task, ev: Event) {
     ev.stopPropagation();
     try {
-      await this.taskService.deleteTask(task._id);
+      this.taskService.deleteTask(task._id);
     } catch (error: any) {
       alert(error.message);
     }

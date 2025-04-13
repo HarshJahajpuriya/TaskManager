@@ -3,7 +3,7 @@ import { User } from '../models/User';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { All_USER_API_URL, LOGIN_API_URL, REGISTER_API_URL } from './urls';
-import { decodeToken } from '../utils/helpers/decodeToken';
+import { decodeToken } from '../utils/decodeToken';
 import { ROLES } from '../utils/enums';
 import { HttpApiService } from './http-api.service';
 
@@ -11,10 +11,13 @@ import { HttpApiService } from './http-api.service';
   providedIn: 'root',
 })
 export class AuthService {
-  private userSubject = new BehaviorSubject<User | null>(null);
+  private readonly userSubject = new BehaviorSubject<User | null>(null);
   user$ = this.userSubject.asObservable();
 
-  constructor(private router: Router, private httpApiService: HttpApiService) {
+  constructor(
+    private readonly router: Router,
+    private readonly httpApiService: HttpApiService
+  ) {
     const token = sessionStorage.getItem('userToken');
     if (token) {
       const user = decodeToken(token);

@@ -47,8 +47,8 @@ There are two collection in MongoDB:
 2. Task
 
 ## How to run TaskManager Server?
-1. Clone the respository in your local.
-2. Setup MongoDB in your local. Create a new connection with the name TaskManager, on the above mentioned URI.
+1. Clone the respository.
+2. Setup MongoDB. Create a new connection with the name TaskManager, on the above mentioned URI.
 3. Run ```mongod``` command in terminal to start the mongoDB server.
     -   If you cannot find ```mongod``` command, you will have to navigate to the folder <i>[ C:\Program Files\MongoDB\Server\8.0\bin ]</i> where mongoDB is installed and then execute ```mongod``` command.
 4. Run ```npm i``` in terminal in the backend folder, to install all the dependencies.
@@ -70,9 +70,9 @@ We are Angular 18 for our Front-end of TaskManager. Again we are using services,
 * socket.io-client
 
 ## How to run TaskManager Front-end?
-1. Clone the repository in your local.
+1. Clone the repository.
 2. Make sure you have angular/cli installed on your machine, otherwise you will have to install it.
-3. Run ```npm i``` in terminal in the backend folder, to install all the dependencies.
+3. Run ```npm i``` in terminal in the frontend folder, to install all the dependencies.
 4. Run ```npm start``` or ```ng serve``` in the terminal, your application will start running.
 
 
